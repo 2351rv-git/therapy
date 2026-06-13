@@ -107,28 +107,28 @@ let state = {
     {
       id: "page_default_1",
       name: "페이지 1",
-      department: "치료실 1",
+      department: "",
       inspector: "",
       items: [...DEFAULT_ITEMS_1]
     },
     {
       id: "page_default_2",
       name: "페이지 2",
-      department: "치료실 2",
+      department: "",
       inspector: "",
       items: [...DEFAULT_ITEMS_2]
     },
     {
       id: "page_default_3",
       name: "페이지 3",
-      department: "치료실 3",
+      department: "",
       inspector: "",
       items: [...DEFAULT_ITEMS_3]
     },
     {
       id: "page_default_4",
       name: "페이지 4",
-      department: "치료실 4",
+      department: "",
       inspector: "",
       items: [...DEFAULT_ITEMS_4]
     }

@@ -96,7 +96,38 @@ const DEFAULT_ITEMS_4 = [
   { name: "블레이즈팟", qty: "1EA" }
 ];
 
-const ADMIN_PASSWORD = "1234";
+let ADMIN_PASSWORD = "1234";
+
+// 로컬스토리지에서 관리자 비밀번호 로드
+function loadAdminPassword() {
+  const saved = safeGetItem("treatment_tools_admin_pw");
+  if (saved) ADMIN_PASSWORD = saved;
+}
+
+function saveAdminPassword(newPw) {
+  ADMIN_PASSWORD = newPw;
+  safeSetItem("treatment_tools_admin_pw", newPw);
+}
+
+function changeAdminPassword() {
+  const currentPw = prompt("현재 관리자 비밀번호를 입력해주세요:");
+  if (currentPw !== ADMIN_PASSWORD) {
+    alert("현재 비밀번호가 일치하지 않습니다.");
+    return;
+  }
+  const newPw = prompt("새 비밀번호를 입력해주세요:");
+  if (!newPw || newPw.trim() === "") {
+    alert("비밀번호는 빈 값으로 설정할 수 없습니다.");
+    return;
+  }
+  const confirmPw = prompt("새 비밀번호를 한 번 더 입력해주세요:");
+  if (newPw !== confirmPw) {
+    alert("새 비밀번호가 일치하지 않습니다.");
+    return;
+  }
+  saveAdminPassword(newPw);
+  alert("관리자 비밀번호가 변경되었습니다.");
+}
 
 // 애플리케이션 상태 (State)
 let state = {
@@ -173,7 +204,7 @@ function sanitizeItemsList(itemsArray) {
 
 // 관리자 인증 팝업
 function checkAdminAccess() {
-  const input = prompt("관리자 비밀번호를 입력해주세요 (기본: 1234):");
+  const input = prompt("관리자 비밀번호를 입력해주세요:");
   if (input === ADMIN_PASSWORD) {
     return true;
   }
@@ -509,9 +540,6 @@ function renderAllPageSheets() {
         <button class="btn btn-xs btn-secondary edit-equip-btn" data-page-id="${page.id}">
           <i data-lucide="sliders" style="width: 12px; height: 12px;"></i> 도구 편집
         </button>
-        <button class="btn btn-xs btn-outline-danger clear-page-btn" data-page-id="${page.id}">
-          <i data-lucide="trash-2" style="width: 12px; height: 12px;"></i> 이번 달 초기화
-        </button>
         <button class="btn btn-xs btn-danger-outline delete-page-btn" data-page-id="${page.id}">
           <i data-lucide="x" style="width: 12px; height: 12px;"></i> 페이지 삭제
         </button>
@@ -564,7 +592,6 @@ function renderAllPageSheets() {
     });
 
     headerBar.querySelector(".edit-equip-btn").addEventListener("click", () => openEquipModal(page.id));
-    headerBar.querySelector(".clear-page-btn").addEventListener("click", () => clearPageMonthData(page.id));
     headerBar.querySelector(".delete-page-btn").addEventListener("click", () => deletePage(page.id));
 
     cardWrapper.appendChild(headerBar);
@@ -672,13 +699,17 @@ function renderAllPageSheets() {
           }
           
           const val = equipData[d] || "";
-          td.textContent = val;
+          const isNonWorkDay = isHolidayDay || dayOfWeek === 0 || dayOfWeek === 6;
+          const displayVal = val === "" && isNonWorkDay ? "-" : val;
+          td.textContent = displayVal;
           
-          if (val === "V") {
+          if (displayVal === "V") {
             td.classList.add("val-v");
-          } else if (["①", "②", "③", "④", "⑤"].some(code => val.includes(code))) {
+          } else if (["①", "②", "③", "④", "⑤"].some(code => displayVal.includes(code))) {
             td.classList.add("val-error");
-          } else if (val !== "") {
+          } else if (displayVal === "-") {
+            td.classList.add("val-holiday");
+          } else if (displayVal !== "") {
             td.classList.add("val-custom");
           }
           
@@ -1000,6 +1031,14 @@ function applyEquipChanges() {
 // 7. 일괄 입력 도구 (Toolbar Operations)
 // ==========================================================================
 
+// 해당 날짜가 비근무일(공휴일/토요일/일요일)인지 판별
+function isNonWorkDay(year, month, day) {
+  const dayOfWeek = getDayOfWeek(year, month, day);
+  if (dayOfWeek === 0 || dayOfWeek === 6) return true; // 일요일, 토요일
+  const holidayName = getHolidayName(year, month, day);
+  return holidayName !== "";
+}
+
 function fillTodayAllV() {
   const today = new Date();
   if (today.getFullYear() === state.year && (today.getMonth() + 1) === state.month) {
@@ -1016,6 +1055,11 @@ function fillDayAllV(day) {
   const targetPageId = document.getElementById("batch-page-select").value;
   if (!targetPageId) {
     alert("일괄 입력을 적용할 대상 페이지를 선택해 주세요.");
+    return;
+  }
+  
+  if (isNonWorkDay(state.year, state.month, day)) {
+    alert("해당 일자는 공휴일/주말입니다. 적합(V) 일괄 입력이 적용되지 않습니다.");
     return;
   }
   
@@ -1041,14 +1085,67 @@ function fillEquipMonthAllV(equipIndex) {
   const page = state.pages.find(p => p.id === targetPageId);
   const item = page.items[equipIndex];
   const name = item ? item.name : "";
-  const displayName = name.trim() ? name : `${equipIndex + 1}번 도구`;
+  const displayName = name.trim() ? name : `${equipIndex + 1}번 기기`;
   const daysInMonth = getDaysInMonth(state.year, state.month);
   const pageDisplayName = page.department || "구분 미설정";
   
-  if (confirm(`'${pageDisplayName}'의 '${displayName}' 도구 한 달 전체 결과를 '적합(V)'으로 입력하시겠습니까?`)) {
+  if (confirm(`'${pageDisplayName}'의 '${displayName}' 기기 한 달 전체 결과를 '적합(V)'으로 입력하시겠습니까?`)) {
     for (let d = 1; d <= daysInMonth; d++) {
-      updateCellValue(targetPageId, equipIndex, d, "V");
+      if (!isNonWorkDay(state.year, state.month, d)) {
+        updateCellValue(targetPageId, equipIndex, d, "V");
+      }
     }
+  }
+}
+
+function fillMonthAllV() {
+  const targetPageId = document.getElementById("batch-page-select").value;
+  if (!targetPageId) {
+    alert("일괄 입력을 적용할 대상 페이지를 선택해 주세요.");
+    return;
+  }
+  
+  const page = state.pages.find(p => p.id === targetPageId);
+  const pageDisplayName = page.department || "구분 미설정";
+  const daysInMonth = getDaysInMonth(state.year, state.month);
+  
+  if (confirm(`'${pageDisplayName}'의 이번 달(${state.year}년 ${state.month}월) 모든 기기, 모든 근무일을 '적합(V)'으로 입력하시겠습니까? (공휴일/주말 제외)`)) {
+    const pageItems = sanitizeItemsList(page.items);
+    for (let equipIndex = 0; equipIndex < MAX_ITEMS; equipIndex++) {
+      for (let d = 1; d <= daysInMonth; d++) {
+        if (!isNonWorkDay(state.year, state.month, d)) {
+          updateCellValue(targetPageId, equipIndex, d, "V");
+        }
+      }
+    }
+  }
+}
+
+function resetMonthData() {
+  const targetPageId = document.getElementById("batch-page-select").value;
+  if (!targetPageId) {
+    alert("초기화할 대상 페이지를 선택해 주세요.");
+    return;
+  }
+  
+  const page = state.pages.find(p => p.id === targetPageId);
+  const pageDisplayName = page.department || "구분 미설정";
+  
+  if (confirm(`정말 '${pageDisplayName}'의 이번 달(${state.year}년 ${state.month}월) 점검 데이터를 전부 초기화하시겠습니까? (도구 품명 및 수량 목록은 유지됩니다)`)) {
+    if (!checkAdminAccess()) return;
+    
+    const monthKey = `${state.year}-${state.month}`;
+    if (state.checklistData[monthKey]) {
+      state.checklistData[monthKey][targetPageId] = {};
+    }
+    
+    safeSetItem("treatment_tools_state_v7", JSON.stringify(state));
+    if (isCloudMode && dbRef) {
+      dbRef.child(`checklistData/${monthKey}/${targetPageId}`).set({});
+    }
+    
+    renderAllPageSheets();
+    alert("해당 페이지의 이번 달 점검 데이터가 초기화되었습니다.");
   }
 }
 
@@ -1109,6 +1206,9 @@ function handleImportFile(e) {
 // ==========================================================================
 
 document.addEventListener("DOMContentLoaded", () => {
+  // 0. 관리자 비밀번호 로드
+  loadAdminPassword();
+  
   // 1. 동기화 방식 확인 및 리스너 가동 (클라우드 vs 로컬 포백)
   initStorageMode();
   
@@ -1206,19 +1306,17 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("batch-fill-equip-btn").addEventListener("click", () => {
     const equipVal = document.getElementById("batch-equip-select").value;
     if (equipVal !== "") fillEquipMonthAllV(parseInt(equipVal));
-    else alert("일괄 입력할 도구를 선택해주세요.");
+    else alert("일괄 입력할 기기를 선택해주세요.");
   });
 
+  document.getElementById("batch-fill-month").addEventListener("click", fillMonthAllV);
+  document.getElementById("batch-reset-month").addEventListener("click", resetMonthData);
+
   // 9. 상단 공통 동작 단추들
-  document.getElementById("theme-toggle").addEventListener("click", () => {
-    state.theme = state.theme === "light" ? "dark" : "light";
-    saveStateToStorage();
-    applyTheme(state.theme);
-  });
-  
   document.getElementById("pdf-btn").addEventListener("click", () => {
     alert("인쇄 대화상자가 열리면 대상(프린터)을 'PDF로 저장' 또는 'Microsoft Print to PDF'로 지정해 주세요.");
     window.print();
   });
   document.getElementById("print-btn").addEventListener("click", () => window.print());
+  document.getElementById("change-pw-btn").addEventListener("click", changeAdminPassword);
 });

@@ -611,6 +611,11 @@ body {
   color: var(--text-secondary);
 }
 
+.check-cell.val-holiday {
+  color: #94a3b8;
+  font-weight: 400;
+}
+
 .check-cell.cell-weekend-sat {
   background-color: #f0f7ff;
 }

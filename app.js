@@ -1113,30 +1113,24 @@ function fillMonthAllV() {
 }
 
 function resetMonthData() {
-  const targetPageId = document.getElementById("batch-page-select").value;
-  if (!targetPageId) {
-    alert("초기화할 대상 페이지를 선택해 주세요.");
-    return;
-  }
-  
-  const page = state.pages.find(p => p.id === targetPageId);
-  const pageDisplayName = page.department || "구분 미설정";
-  
-  if (confirm(`정말 '${pageDisplayName}'의 이번 달(${state.year}년 ${state.month}월) 점검 데이터를 전부 초기화하시겠습니까? (도구 품명 및 수량 목록은 유지됩니다)`)) {
+  if (confirm(`정말 모든 페이지의 이번 달(${state.year}년 ${state.month}월) 점검 데이터를 전부 초기화하시겠습니까? (도구 품명 및 수량 목록은 유지됩니다)`)) {
     if (!checkAdminAccess()) return;
     
     const monthKey = `${state.year}-${state.month}`;
-    if (state.checklistData[monthKey]) {
-      state.checklistData[monthKey][targetPageId] = {};
-    }
+    state.pages.forEach(page => {
+      if (!state.checklistData[monthKey]) {
+        state.checklistData[monthKey] = {};
+      }
+      state.checklistData[monthKey][page.id] = {};
+      
+      if (isCloudMode && dbRef) {
+        dbRef.child(`checklistData/${monthKey}/${page.id}`).set({});
+      }
+    });
     
     safeSetItem("treatment_tools_state_v7", JSON.stringify(state));
-    if (isCloudMode && dbRef) {
-      dbRef.child(`checklistData/${monthKey}/${targetPageId}`).set({});
-    }
-    
     renderAllPageSheets();
-    alert("해당 페이지의 이번 달 점검 데이터가 초기화되었습니다.");
+    alert("모든 페이지의 이번 달 점검 데이터가 초기화되었습니다.");
   }
 }
 

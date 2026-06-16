@@ -32,9 +32,13 @@
         <span id="sync-status" class="status-badge local"><i data-lucide="database"></i> 로컬 저장 모드</span>
       </div>
       <div class="header-actions">
-        <button id="pdf-btn" class="btn btn-outline" title="PDF 파일로 저장하기 (인쇄 창에서 'PDF로 저장' 선택)">
-          <i data-lucide="file-text"></i> PDF로 저장
+        <button id="export-backup-btn" class="btn btn-outline" title="데이터를 JSON 파일로 내보내기 (인수인계용)">
+          <i data-lucide="download"></i> 백업 내보내기
         </button>
+        <button id="import-backup-btn" class="btn btn-outline" title="JSON 백업 파일에서 데이터 복원">
+          <i data-lucide="upload"></i> 백업 가져오기
+        </button>
+        <input type="file" id="import-file-input" accept=".json" style="display: none;">
         <button id="print-btn" class="btn btn-primary" title="전체 페이지 인쇄하기 (A4 가로 최적화)">
           <i data-lucide="printer"></i> 인쇄하기
         </button>
@@ -79,26 +83,25 @@
           
           <div class="batch-divider"></div>
           
-          <button id="batch-fill-today" class="btn btn-xs btn-outline-primary">오늘 일자 모두 적합(V)</button>
+          <button id="batch-fill-today" class="btn btn-xs btn-outline-primary">오늘 일자 모두 확인(V)</button>
           
           <div class="batch-divider"></div>
           
           <select id="batch-day-select" class="select-xs">
             <option value="">일자 선택...</option>
           </select>
-          <button id="batch-fill-day-btn" class="btn btn-xs btn-secondary">선택 일자 모두 적합(V)</button>
+          <button id="batch-fill-day-btn" class="btn btn-xs btn-secondary">선택 일자 모두 확인(V)</button>
           
           <div class="batch-divider"></div>
           
           <select id="batch-equip-select" class="select-xs">
             <option value="">기기 선택...</option>
           </select>
-          <button id="batch-fill-equip-btn" class="btn btn-xs btn-secondary">선택 기기 한 달 모두 적합(V)</button>
+          <button id="batch-fill-equip-btn" class="btn btn-xs btn-secondary">선택 기기 한 달 모두 확인(V)</button>
           
           <div class="batch-divider"></div>
           
-          <button id="batch-fill-month" class="btn btn-xs btn-primary">이번 달 모두 적합(V)</button>
-          
+          <button id="batch-fill-month" class="btn btn-xs btn-primary">이번 달 모두 확인(V)</button>
           <button id="batch-reset-month" class="btn btn-xs btn-outline-danger">초기화</button>
         </div>
       </div>
@@ -142,13 +145,7 @@
 
   <!-- Cell Dropdown Menu Selector (Triggered on cell click) -->
   <div id="cell-dropdown-menu" class="cell-dropdown no-print" style="display: none;">
-    <div class="dropdown-item val-v" data-val="V"><i data-lucide="check"></i> V (적합)</div>
-    <div class="dropdown-divider"></div>
-    <div class="dropdown-item val-code" data-val="①">① 작동상태</div>
-    <div class="dropdown-item val-code" data-val="②">② 알람점검</div>
-    <div class="dropdown-item val-code" data-val="③">③ 케이블 상태</div>
-    <div class="dropdown-item val-code" data-val="④">④ 외관상태</div>
-    <div class="dropdown-item val-code" data-val="⑤">⑤ 청결 상태</div>
+    <div class="dropdown-item val-v" data-val="V"><i data-lucide="check"></i> V (확인)</div>
     <div class="dropdown-divider"></div>
     <div class="dropdown-custom-row">
       <input type="text" id="dropdown-custom-input" placeholder="직접 입력..." onclick="event.stopPropagation()">

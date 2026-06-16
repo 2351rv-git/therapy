@@ -1100,9 +1100,11 @@ function fillMonthAllV() {
     state.pages.forEach(page => {
       const pageItems = sanitizeItemsList(page.items);
       for (let equipIndex = 0; equipIndex < MAX_ITEMS; equipIndex++) {
-        for (let d = 1; d <= daysInMonth; d++) {
-          if (!isNonWorkDay(state.year, state.month, d)) {
-            updateCellValue(page.id, equipIndex, d, "V");
+        if (pageItems[equipIndex] && pageItems[equipIndex].name && pageItems[equipIndex].name.trim()) {
+          for (let d = 1; d <= daysInMonth; d++) {
+            if (!isNonWorkDay(state.year, state.month, d)) {
+              updateCellValue(page.id, equipIndex, d, "V");
+            }
           }
         }
       }

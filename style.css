@@ -217,9 +217,10 @@ body {
 }
 
 .btn-xs {
-  padding: 6px 12px;
-  font-size: 0.75rem;
+  padding: 4px 8px;
+  font-size: 0.7rem;
   border-radius: 4px;
+  white-space: nowrap;
 }
 
 .btn-outline-primary {
@@ -325,26 +326,27 @@ body {
 .batch-toolbar {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   padding-top: 16px;
   border-top: 1px solid var(--border-color);
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .batch-tools-left {
   display: flex;
   align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
+  gap: 6px;
+  flex-wrap: nowrap;
 }
 
 .batch-title {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   font-weight: 600;
   color: var(--text-secondary);
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
+  white-space: nowrap;
 }
 
 .batch-title svg {
@@ -357,16 +359,17 @@ body {
   width: 1px;
   height: 20px;
   background-color: var(--border-color);
-  margin: 0 4px;
+  margin: 0 2px;
 }
 
 .select-xs {
-  padding: 4px 8px;
-  font-size: 0.75rem;
+  padding: 4px 6px;
+  font-size: 0.7rem;
   border-radius: 4px;
   border: 1px solid var(--border-color);
   background-color: var(--bg-primary);
   color: var(--text-primary);
+  max-width: 120px;
 }
 
 /* ==========================================================================

@@ -1059,12 +1059,12 @@ function fillDayAllV(day) {
   }
   
   if (isNonWorkDay(state.year, state.month, day)) {
-    alert("해당 일자는 공휴일/주말입니다. 적합(V) 일괄 입력이 적용되지 않습니다.");
+    alert("해당 일자는 공휴일/주말입니다. 확인(V) 일괄 입력이 적용되지 않습니다.");
     return;
   }
   
   const page = state.pages.find(p => p.id === targetPageId);
-  if (confirm(`'${page.name}'의 ${day}일의 모든 도구 결과를 '적합(V)'으로 입력하시겠습니까?`)) {
+  if (confirm(`'${page.name}'의 ${day}일의 모든 도구 결과를 '확인(V)'으로 입력하시겠습니까?`)) {
     for (let index = 0; index < MAX_ITEMS; index++) {
       if (page.items[index] && page.items[index].name && page.items[index].name.trim()) {
         updateCellValue(targetPageId, index, day, "V");
@@ -1089,7 +1089,7 @@ function fillEquipMonthAllV(equipIndex) {
   const daysInMonth = getDaysInMonth(state.year, state.month);
   const pageDisplayName = page.department || "구분 미설정";
   
-  if (confirm(`'${pageDisplayName}'의 '${displayName}' 기기 한 달 전체 결과를 '적합(V)'으로 입력하시겠습니까?`)) {
+  if (confirm(`'${pageDisplayName}'의 '${displayName}' 기기 한 달 전체 결과를 '확인(V)'으로 입력하시겠습니까?`)) {
     for (let d = 1; d <= daysInMonth; d++) {
       if (!isNonWorkDay(state.year, state.month, d)) {
         updateCellValue(targetPageId, equipIndex, d, "V");
@@ -1109,7 +1109,7 @@ function fillMonthAllV() {
   const pageDisplayName = page.department || "구분 미설정";
   const daysInMonth = getDaysInMonth(state.year, state.month);
   
-  if (confirm(`'${pageDisplayName}'의 이번 달(${state.year}년 ${state.month}월) 모든 기기, 모든 근무일을 '적합(V)'으로 입력하시겠습니까? (공휴일/주말 제외)`)) {
+  if (confirm(`'${pageDisplayName}'의 이번 달(${state.year}년 ${state.month}월) 모든 기기, 모든 근무일을 '확인(V)'으로 입력하시겠습니까? (공휴일/주말 제외)`)) {
     const pageItems = sanitizeItemsList(page.items);
     for (let equipIndex = 0; equipIndex < MAX_ITEMS; equipIndex++) {
       for (let d = 1; d <= daysInMonth; d++) {
@@ -1313,10 +1313,9 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("batch-reset-month").addEventListener("click", resetMonthData);
 
   // 9. 상단 공통 동작 단추들
-  document.getElementById("pdf-btn").addEventListener("click", () => {
-    alert("인쇄 대화상자가 열리면 대상(프린터)을 'PDF로 저장' 또는 'Microsoft Print to PDF'로 지정해 주세요.");
-    window.print();
-  });
+  document.getElementById("export-backup-btn").addEventListener("click", exportBackup);
+  document.getElementById("import-backup-btn").addEventListener("click", triggerImport);
+  document.getElementById("import-file-input").addEventListener("change", handleImportFile);
   document.getElementById("print-btn").addEventListener("click", () => window.print());
   document.getElementById("change-pw-btn").addEventListener("click", changeAdminPassword);
 });

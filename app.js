@@ -1052,24 +1052,19 @@ function fillTodayAllV() {
 function fillDayAllV(day) {
   if (!day) return;
   
-  const targetPageId = document.getElementById("batch-page-select").value;
-  if (!targetPageId) {
-    alert("일괄 입력을 적용할 대상 페이지를 선택해 주세요.");
-    return;
-  }
-  
   if (isNonWorkDay(state.year, state.month, day)) {
     alert("해당 일자는 공휴일/주말입니다. 확인(V) 일괄 입력이 적용되지 않습니다.");
     return;
   }
   
-  const page = state.pages.find(p => p.id === targetPageId);
-  if (confirm(`'${page.name}'의 ${day}일의 모든 도구 결과를 '확인(V)'으로 입력하시겠습니까?`)) {
-    for (let index = 0; index < MAX_ITEMS; index++) {
-      if (page.items[index] && page.items[index].name && page.items[index].name.trim()) {
-        updateCellValue(targetPageId, index, day, "V");
+  if (confirm(`모든 페이지의 ${day}일 모든 도구 결과를 '확인(V)'으로 입력하시겠습니까?`)) {
+    state.pages.forEach(page => {
+      for (let index = 0; index < MAX_ITEMS; index++) {
+        if (page.items[index] && page.items[index].name && page.items[index].name.trim()) {
+          updateCellValue(page.id, index, day, "V");
+        }
       }
-    }
+    });
   }
 }
 
@@ -1099,25 +1094,19 @@ function fillEquipMonthAllV(equipIndex) {
 }
 
 function fillMonthAllV() {
-  const targetPageId = document.getElementById("batch-page-select").value;
-  if (!targetPageId) {
-    alert("일괄 입력을 적용할 대상 페이지를 선택해 주세요.");
-    return;
-  }
-  
-  const page = state.pages.find(p => p.id === targetPageId);
-  const pageDisplayName = page.department || "구분 미설정";
   const daysInMonth = getDaysInMonth(state.year, state.month);
   
-  if (confirm(`'${pageDisplayName}'의 이번 달(${state.year}년 ${state.month}월) 모든 기기, 모든 근무일을 '확인(V)'으로 입력하시겠습니까? (공휴일/주말 제외)`)) {
-    const pageItems = sanitizeItemsList(page.items);
-    for (let equipIndex = 0; equipIndex < MAX_ITEMS; equipIndex++) {
-      for (let d = 1; d <= daysInMonth; d++) {
-        if (!isNonWorkDay(state.year, state.month, d)) {
-          updateCellValue(targetPageId, equipIndex, d, "V");
+  if (confirm(`모든 페이지의 이번 달(${state.year}년 ${state.month}월) 모든 기기, 모든 근무일을 '확인(V)'으로 입력하시겠습니까? (공휴일/주말 제외)`)) {
+    state.pages.forEach(page => {
+      const pageItems = sanitizeItemsList(page.items);
+      for (let equipIndex = 0; equipIndex < MAX_ITEMS; equipIndex++) {
+        for (let d = 1; d <= daysInMonth; d++) {
+          if (!isNonWorkDay(state.year, state.month, d)) {
+            updateCellValue(page.id, equipIndex, d, "V");
+          }
         }
       }
-    }
+    });
   }
 }
 

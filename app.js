@@ -739,10 +739,6 @@ function renderAllPageSheets() {
             <div class="sig-label">파트장</div>
             <div class="sig-space"></div>
           </td>
-          <td class="sig-cell">
-            <div class="sig-label">부서장</div>
-            <div class="sig-space"></div>
-          </td>
         </tr>
       </table>
     `;

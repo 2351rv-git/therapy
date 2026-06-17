@@ -217,9 +217,9 @@ body {
 }
 
 .btn-xs {
-  padding: 6px 12px;
-  font-size: 0.75rem;
-  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 0.82rem;
+  border-radius: 5px;
   white-space: nowrap;
 }
 
@@ -365,13 +365,13 @@ body {
 }
 
 .select-xs {
-  padding: 4px 8px;
-  font-size: 0.75rem;
-  border-radius: 4px;
+  padding: 7px 10px;
+  font-size: 0.82rem;
+  border-radius: 5px;
   border: 1px solid var(--border-color);
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  max-width: 120px;
+  max-width: 140px;
 }
 
 /* ==========================================================================

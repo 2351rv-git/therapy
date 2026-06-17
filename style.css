@@ -671,7 +671,7 @@ body {
 }
 
 .sig-space {
-  height: 78px;
+  height: 156px;
 }
 
 /* Footer addition button */
@@ -1090,7 +1090,7 @@ body {
   }
 
   .sig-space {
-    height: 38px !important;
+    height: 76px !important;
   }
 
   .sig-label {

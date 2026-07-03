@@ -1017,6 +1017,11 @@ function fillTodayAllV() {
 function fillDayAllV(day) {
   if (!day) return;
   
+  if (isNonWorkDay(state.year, state.month, day)) {
+    alert("해당 일자는 공휴일/주말입니다. 일괄 입력이 적용되지 않습니다.");
+    return;
+  }
+  
   if (confirm(`모든 페이지의 ${day}일 모든 도구 결과를 '확인(V)'으로 입력하시겠습니까?`)) {
     state.pages.forEach(page => {
       for (let index = 0; index < MAX_ITEMS; index++) {
@@ -1044,9 +1049,11 @@ function fillEquipMonthAllV(equipIndex) {
   const daysInMonth = getDaysInMonth(state.year, state.month);
   const pageDisplayName = page.department || "구분 미설정";
   
-  if (confirm(`'${pageDisplayName}'의 '${displayName}' 기기 한 달 전체 결과를 '확인(V)'으로 입력하시겠습니까?`)) {
+  if (confirm(`'${pageDisplayName}'의 '${displayName}' 기기 한 달 전체 결과를 '확인(V)'으로 입력하시겠습니까? (공휴일/주말 제외)`)) {
     for (let d = 1; d <= daysInMonth; d++) {
-      updateCellValue(targetPageId, equipIndex, d, "V");
+      if (!isNonWorkDay(state.year, state.month, d)) {
+        updateCellValue(targetPageId, equipIndex, d, "V");
+      }
     }
   }
 }
@@ -1054,13 +1061,15 @@ function fillEquipMonthAllV(equipIndex) {
 function fillMonthAllV() {
   const daysInMonth = getDaysInMonth(state.year, state.month);
   
-  if (confirm(`모든 페이지의 이번 달(${state.year}년 ${state.month}월) 모든 기기, 모든 일자를 '확인(V)'으로 입력하시겠습니까?`)) {
+  if (confirm(`모든 페이지의 이번 달(${state.year}년 ${state.month}월) 모든 기기, 모든 근무일을 '확인(V)'으로 입력하시겠습니까? (공휴일/주말 제외)`)) {
     state.pages.forEach(page => {
       const pageItems = sanitizeItemsList(page.items);
       for (let equipIndex = 0; equipIndex < MAX_ITEMS; equipIndex++) {
         if (pageItems[equipIndex] && pageItems[equipIndex].name && pageItems[equipIndex].name.trim()) {
           for (let d = 1; d <= daysInMonth; d++) {
-            updateCellValue(page.id, equipIndex, d, "V");
+            if (!isNonWorkDay(state.year, state.month, d)) {
+              updateCellValue(page.id, equipIndex, d, "V");
+            }
           }
         }
       }

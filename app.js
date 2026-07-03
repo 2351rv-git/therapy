@@ -1017,11 +1017,6 @@ function fillTodayAllV() {
 function fillDayAllV(day) {
   if (!day) return;
   
-  if (isNonWorkDay(state.year, state.month, day)) {
-    alert("해당 일자는 공휴일/주말입니다. 일괄 입력이 적용되지 않습니다.");
-    return;
-  }
-  
   if (confirm(`모든 페이지의 ${day}일 모든 도구 결과를 '확인(V)'으로 입력하시겠습니까?`)) {
     state.pages.forEach(page => {
       for (let index = 0; index < MAX_ITEMS; index++) {

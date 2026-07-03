@@ -1054,9 +1054,7 @@ body {
   /* Reset weekend colors for clean printing if they don't support color */
   .day-col.saturday,
   .day-col.sunday {
-    background-color: #f8fafc !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+    background-color: transparent !important;
   }
 
   .check-cell.cell-weekend-sat,

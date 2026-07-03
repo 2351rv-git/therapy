@@ -579,13 +579,13 @@ body {
 }
 
 .day-col.saturday {
-  color: var(--saturday-text);
-  background-color: #eff6ff;
+  color: inherit;
+  background-color: transparent;
 }
 
 .day-col.sunday {
-  color: var(--sunday-text);
-  background-color: #fef2f2;
+  color: inherit;
+  background-color: transparent;
 }
 
 /* Interactive Cells on Screen */
@@ -622,11 +622,11 @@ body {
 }
 
 .check-cell.cell-weekend-sat {
-  background-color: #f0f7ff;
+  background-color: transparent;
 }
 
 .check-cell.cell-weekend-sun {
-  background-color: #fff1f1;
+  background-color: transparent;
 }
 
 /* Footer Section & Signatures */

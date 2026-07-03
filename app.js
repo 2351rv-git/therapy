@@ -618,19 +618,7 @@ function renderAllPageSheets() {
     let dayColsHtml = "";
     for (let d = 1; d <= 31; d++) {
       if (d <= daysInMonth) {
-        const holidayName = getHolidayName(state.year, state.month, d);
-        const isHolidayDay = holidayName !== "";
-        const dayOfWeek = getDayOfWeek(state.year, state.month, d);
-        let weekendClass = "";
-        let titleAttr = "";
-        
-        if (isHolidayDay || dayOfWeek === 0) {
-          weekendClass = " sunday"; // 공휴일 및 일요일 빨간색
-          if (isHolidayDay) titleAttr = ` title="${holidayName}"`;
-        } else if (dayOfWeek === 6) {
-          weekendClass = " saturday"; // 토요일 파란색
-        }
-        dayColsHtml += `<th class="day-col${weekendClass}"${titleAttr}>${d}</th>`;
+        dayColsHtml += `<th class="day-col">${d}</th>`;
       } else {
         dayColsHtml += `<th style="background-color: #e2e8f0; color: #94a3b8;">-</th>`;
       }
@@ -687,21 +675,8 @@ function renderAllPageSheets() {
           td.dataset.equipIndex = equipIndex;
           td.dataset.day = d;
           
-          const holidayName = getHolidayName(state.year, state.month, d);
-          const isHolidayDay = holidayName !== "";
-          const dayOfWeek = getDayOfWeek(state.year, state.month, d);
-          
-          if (isHolidayDay || dayOfWeek === 0) {
-            td.classList.add("cell-weekend-sun"); // 공휴일 및 일요일 빨간색 배경
-            if (isHolidayDay) td.title = holidayName; // 마우스 오버 시 공휴일 명칭 표시
-          } else if (dayOfWeek === 6) {
-            td.classList.add("cell-weekend-sat"); // 토요일 파란색 배경
-          }
-          
           const val = equipData[d] || "";
-          const isNonWorkDay = isHolidayDay || dayOfWeek === 0 || dayOfWeek === 6;
-          const displayVal = val === "" && isNonWorkDay ? "-" : val;
-          td.textContent = displayVal;
+          td.textContent = val;
           
           if (displayVal === "V") {
             td.classList.add("val-v");
@@ -856,10 +831,6 @@ function updateCellValue(pageId, equipIndex, day, val) {
       if (cell) {
         cell.textContent = val;
         cell.className = "check-cell"; 
-        
-        const dayOfWeek = getDayOfWeek(state.year, state.month, day);
-        if (dayOfWeek === 6) cell.classList.add("cell-weekend-sat");
-        if (dayOfWeek === 0) cell.classList.add("cell-weekend-sun");
         
         if (val === "V") {
           cell.classList.add("val-v");

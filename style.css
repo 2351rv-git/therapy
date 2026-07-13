@@ -1090,12 +1090,18 @@ body {
   }
 
   .sig-space {
-    height: 60px !important;
+    height: 65px !important;
   }
 
   .sig-label {
-    font-size: 6.5pt !important;
-    padding: 1px 0 !important;
+    font-size: 8pt !important;
+    padding: 2px 0 !important;
+    height: 24px !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     background-color: #f1f5f9 !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
